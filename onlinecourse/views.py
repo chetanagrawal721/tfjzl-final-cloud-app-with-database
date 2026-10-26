@@ -1,3 +1,7 @@
+# GitHub Repository: tfjzl-final-cloud-app-with-database
+# File: onlinecourse/views.py
+# URL: https://github.com/chetanagrawal721/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/views.py
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse

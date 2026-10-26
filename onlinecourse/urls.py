@@ -1,3 +1,7 @@
+# GitHub Repository: tfjzl-final-cloud-app-with-database
+# File: onlinecourse/urls.py
+# URL: https://github.com/chetanagrawal721/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/urls.py
+
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static

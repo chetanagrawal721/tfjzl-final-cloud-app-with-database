@@ -1,3 +1,7 @@
+# GitHub Repository: tfjzl-final-cloud-app-with-database
+# File: onlinecourse/models.py
+# URL: https://github.com/chetanagrawal721/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/models.py
+
 import sys
 from django.utils.timezone import now
 try:

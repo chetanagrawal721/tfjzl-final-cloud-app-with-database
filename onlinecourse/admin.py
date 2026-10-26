@@ -1,3 +1,7 @@
+# GitHub Repository: tfjzl-final-cloud-app-with-database
+# File: onlinecourse/admin.py
+# URL: https://github.com/chetanagrawal721/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/admin.py
+
 from django.contrib import admin
 # Import the seven required model classes
 from .models import Course, Lesson, Instructor, Learner, Question, Choice, Submission

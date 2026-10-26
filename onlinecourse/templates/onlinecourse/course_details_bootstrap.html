@@ -1,3 +1,6 @@
+<!-- Repository: tfjzl-final-cloud-app-with-database -->
+<!-- File: onlinecourse/templates/onlinecourse/course_details_bootstrap.html -->
+<!-- URL: https://github.com/chetanagrawal721/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/templates/onlinecourse/course_details_bootstrap.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,33 +24,30 @@
         </div>
     </nav>
 
-    <div class="container mt-3">
-        <div class="card p-3 mb-3 bg-light">
-            <h2 class="card-title text-primary">{{ course.name }}</h2>
-        </div>
-
-        <h4 class="mb-3">Course Lessons</h4>
-        <div class="card-columns-vertical">
+    <!-- Page content -->
+    <div class="container-fluid mt-3">
+        <h2>{{ course.name }}</h2>
+        <div class="card-columns-vertical card-columns">
             {% for lesson in course.lesson_set.all %}
-                <div class="card mt-2 mb-2 shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h5>Lesson {{ lesson.order|add:1 }}: {{ lesson.title }}</h5>
-                    </div>
+                <div class="card mt-1 shadow-sm">
+                    <div class="card-header bg-info text-white"><h5>Lesson {{ lesson.order|add:1 }}: {{ lesson.title }}</h5></div>
                     <div class="card-body">
+                        <h6 class="card-subtitle text-muted mb-2">{{ course.name }}</h6>
                         <p class="card-text">{{ lesson.content }}</p>
                     </div>
                 </div>
             {% endfor %}
         </div>
 
+        <!-- Task: show questions and choices -->
         {% if user.is_authenticated %}
             <button class="btn btn-info btn-block mt-4 mb-3" data-toggle="collapse" data-target="#exam">Start Exam</button>
             <div id="exam" class="collapse">
                 <form id="questionform" action="{% url 'onlinecourse:submit' course.id %}" method="post">
                     {% csrf_token %}
                     {% for question in course.question_set.all %}
-                        <div class="card mt-2">
-                            <div class="card-header">
+                        <div class="card mt-2 shadow-sm">
+                            <div class="card-header bg-light">
                                 <h5>{{ question.question_text }}</h5>
                             </div>
                             <div class="card-body">
