@@ -113,9 +113,8 @@ def extract_answers(request):
 
 
 def submit(request, course_id):
-    # Get user and course object
-    course = get_object_or_404(Course, pk=course_id)
     user = request.user
+    course = get_object_or_404(Course, pk=course_id)
 
     # Get or create the associated enrollment object
     enrollment = Enrollment.objects.filter(user=user, course=course).first()
@@ -125,44 +124,45 @@ def submit(request, course_id):
     # Create a submission object referring to the enrollment
     submission = Submission.objects.create(enrollment=enrollment)
 
-    # Collect the selected choices from exam form
-    selected_choice_ids = extract_answers(request)
-    selected_choices = Choice.objects.filter(id__in=selected_choice_ids)
+    # Collect selected choices from exam form and associate them
+    selected_choices = extract_answers(request)
+    for choice_id in selected_choices:
+        choice = get_object_or_404(Choice, pk=choice_id)
+        submission.choices.add(choice)
 
-    # Add each selected choice object to the submission object
-    submission.choices.set(selected_choices)
     submission.save()
 
     # Redirect to show_exam_result with the submission id
-    return HttpResponseRedirect(reverse('onlinecourse:show_exam_result', args=(course.id, submission.id)))
+    return HttpResponseRedirect(
+        reverse('onlinecourse:show_exam_result', args=(course.id, submission.id))
+    )
 
 
 def show_exam_result(request, course_id, submission_id):
-    # Get course and submission based on their ids
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
 
-    # Get the selected choices from the submission record
-    submitted_choices = submission.choices.all()
+    selected_ids = list(submission.choices.values_list('id', flat=True))
+
+    total_score = 0
+    possible_score = 0
+
     questions = course.question_set.all()
-
-    # Calculate total score and score achieved
-    total_score = sum([q.grade for q in questions])
-    achieved_score = 0
     for question in questions:
-        if question.is_get_score(submitted_choices):
-            achieved_score += question.grade
+        possible_score += question.grade
+        if question.is_get_score(selected_ids):
+            total_score += question.grade
 
-    grade = round((achieved_score / total_score) * 100) if total_score > 0 else 0
+    grade = int((total_score / possible_score) * 100) if possible_score > 0 else 0
 
     context = {
         'course': course,
         'submission': submission,
-        'submitted_choices': submitted_choices,
-        'selected_choices': submitted_choices,
-        'selected_ids': [c.id for c in submitted_choices],
-        'grade': grade,
+        'selected_ids': selected_ids,
+        'submitted_choices': submission.choices.all(),
         'total_score': total_score,
-        'achieved_score': achieved_score,
+        'possible_score': possible_score,
+        'grade': grade,
+        'possible': possible_score,
     }
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)

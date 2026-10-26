@@ -10,33 +10,16 @@
 
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
-        <div class="navbar-header">
-              <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">Home</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            {% if user.is_authenticated %}
-            <li>
-                <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                <a class="btn btn-link" href="{% url 'onlinecourse:logout' %}">Logout</a>
-            </li>
-            {% else %}
-            <li>
-                <form class="form-inline" action="{% url 'onlinecourse:login' %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Username" name="username">
-                        <input type="password" class="form-control" placeholder="Password" name="psw">
-                        <button class="btn btn-primary" type="submit">Login</button>
-                        <a class="btn btn-link" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
-                    </div>
-                </form>
-            </li>
-            {% endif %}
-        </ul>
+        <a class="navbar-brand" href="{% url 'onlinecourse:index' %}">Home</a>
+        {% if user.is_authenticated %}
+            <span>{{ user.first_name }} ({{ user.username }}) <a class="btn btn-link" href="{% url 'onlinecourse:logout' %}">Logout</a></span>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'onlinecourse:login' %}">Login</a>
+        {% endif %}
     </div>
 </nav>
 
-<div class="container-fluid mt-3">
+<div class="container mt-3">
     {% if grade >= 80 %}
         <div class="alert alert-success">
             <b>Congratulations, {{ user.first_name }}!</b> You have passed the exam and completed the course with score {{ grade }}/100.
@@ -53,21 +36,21 @@
         {% for question in course.question_set.all %}
             <div class="card mt-2">
                 <div class="card-header">
-                    <h5>Question {{ forloop.counter }}: {{ question.question_text }} <span class="badge badge-secondary float-right">{{ question.grade }} points</span></h5>
+                    <h5>{{ question.question_text }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
                         {% for choice in question.choice_set.all %}
                             <div class="form-check mt-1">
-                                {% if choice in submitted_choices and choice.is_correct %}
+                                {% if choice.id in selected_ids and choice.is_correct %}
                                     <label class="form-check-label text-success font-weight-bold">
                                         &#10004; Correct answer: {{ choice.choice_text }}
                                     </label>
-                                {% elif choice in submitted_choices and not choice.is_correct %}
+                                {% elif choice.id in selected_ids and not choice.is_correct %}
                                     <label class="form-check-label text-danger font-weight-bold">
                                         &#10008; Incorrect answer: {{ choice.choice_text }}
                                     </label>
-                                {% elif choice not in submitted_choices and choice.is_correct %}
+                                {% elif choice.id not in selected_ids and choice.is_correct %}
                                     <label class="form-check-label text-warning font-weight-bold">
                                         &#9888; Not selected: {{ choice.choice_text }}
                                     </label>
