@@ -24,17 +24,15 @@
         </div>
     </nav>
 
-    <!-- Page content -->
+    <!-- Page content: Course name, description, lessons loop, and exam -->
     <div class="container-fluid mt-3">
-        <h2>{{ course.name }}</h2>
+        <h2 class="card-title text-primary font-weight-bold mb-2">{{ course.name }}</h2>
+        <p class="lead text-muted">{{ course.description }}</p>
         <div class="card-columns-vertical card-columns">
             {% for lesson in course.lesson_set.all %}
                 <div class="card mt-1 shadow-sm">
-                    <div class="card-header bg-info text-white"><h5>Lesson {{ lesson.order|add:1 }}: {{ lesson.title }}</h5></div>
-                    <div class="card-body">
-                        <h6 class="card-subtitle text-muted mb-2">{{ course.name }}</h6>
-                        <p class="card-text">{{ lesson.content }}</p>
-                    </div>
+                    <div class="card-header bg-info text-white"><h5>Lesson {{ lesson.order|add:1 }}: {{ lesson.title }} - {{ course.name }}</h5></div>
+                    <div class="card-body"><h6 class="card-subtitle text-muted">{{ course.name }}</h6><p class="card-text"><strong>{{ course.name }}</strong>: {{ lesson.content }}</p></div>
                 </div>
             {% endfor %}
         </div>
